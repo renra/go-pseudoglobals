@@ -13,7 +13,7 @@ import (
 type ConfigInstance struct {
 }
 
-func (cInst *ConfigInstance) GetString(key string) string {
+func (ci *ConfigInstance) GetString(key string) string {
   return key;
 }
 

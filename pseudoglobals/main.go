@@ -4,32 +4,35 @@ const SEVERITY_INFO = 1
 const SEVERITY_ERROR = 0
 
 type ConfigInstance interface {
+  Get(string) interface{}
   GetString(string) string
-}
-
-type configImplementation interface {
-  Load() ConfigInstance
 }
 
 type LoggerInstance interface {
   LogWithSeverity(map[string]string, int)
 }
 
-type loggerImplementation interface {
+type LoggerImplementation interface {
   New(string, int, map[int]string) LoggerInstance
 }
 
 type Pseudoglobals struct {
-  Config ConfigInstance
-  Logger LoggerInstance
+  config ConfigInstance
+  logger LoggerInstance
 }
 
-func New(c configImplementation, l loggerImplementation) (* Pseudoglobals) {
-  config := c.Load()
+func (g *Pseudoglobals) Config() ConfigInstance {
+  return g.config
+}
 
+func (g Pseudoglobals) Logger() LoggerInstance {
+  return g.logger
+}
+
+func New(c ConfigInstance, l LoggerImplementation) (* Pseudoglobals) {
   return &Pseudoglobals{
-    Config: config,
-    Logger: l.New(
+    config: config,
+    logger: l.New(
       config.GetString("service"),
       SEVERITY_INFO,
       map[int]string {
@@ -41,10 +44,9 @@ func New(c configImplementation, l loggerImplementation) (* Pseudoglobals) {
 }
 
 func (p * Pseudoglobals) Log(msg string) {
-  p.Logger.LogWithSeverity(map[string]string{"message": msg}, SEVERITY_INFO)
+  p.Logger().LogWithSeverity(map[string]string{"message": msg}, SEVERITY_INFO)
 }
 
 func (p * Pseudoglobals) LogErrorWithTrace(msg string, trace string) {
-  p.Logger.LogWithSeverity(map[string]string{"msg": msg, "trace": trace}, SEVERITY_ERROR)
+  p.Logger().LogWithSeverity(map[string]string{"msg": msg, "trace": trace}, SEVERITY_ERROR)
 }
-

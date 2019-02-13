@@ -8,7 +8,11 @@ import (
 type ConfigInstance struct {
 }
 
-func (cInst *ConfigInstance) GetString(key string) string {
+func (ci *ConfigInstance) Get(key string) interface{} {
+  return key;
+}
+
+func (ci *ConfigInstance) GetString(key string) string {
   return key;
 }
 
@@ -22,7 +26,7 @@ func (ci ConfigImplementation) Load() pseudoglobals.ConfigInstance {
 type LoggerInstance struct {
 }
 
-func (lInst LoggerInstance) LogWithSeverity(data map[string]string, severity int) {
+func (lInst *LoggerInstance) LogWithSeverity(data map[string]string, severity int) {
   fmt.Println(fmt.Sprintf("%d: %s", severity, data));
 }
 
@@ -35,7 +39,7 @@ func (li LoggerImplementation) New(label string, thresholdSeverity int, severiti
 
 
 func main() {
-  globals := pseudoglobals.New(ConfigImplementation{}, LoggerImplementation{})
+  globals := pseudoglobals.New(ConfigImplementation{}, LoggerImplementation{}, "foo", "foo")
 
   defer func() {
     if r := recover(); r != nil {
