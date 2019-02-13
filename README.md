@@ -2,6 +2,8 @@
 
 A project that takes care of pseudoglobals that can be passed to http request handlers. It was built with together with renra/go-logger and renra/go-config (TODO: add links) but it can be used with anything that implements the same interface. Right now it provides access to `Config` and `Logger`.
 
+## Usage
+
 ```go
 package main
 
