@@ -30,16 +30,54 @@ func (li LoggerImplementation) New(label string, thresholdSeverity int, severiti
   return &LoggerInstance{}
 }
 
+type FakeClient struct {
+}
+
+func (fc *FakeClient) DoSomething() {
+  fmt.Println("Fake client doing something")
+}
+
+type PG struct {
+  globals *pseudoglobals.Pseudoglobals
+}
+
+func (pg *PG) Config() pseudoglobals.ConfigInstance {
+  return pg.globals.Config()
+}
+
+func (pg *PG) Logger() pseudoglobals.LoggerInstance {
+  return pg.globals.Logger()
+}
+
+func (pg *PG) Log(msg string) {
+  pg.globals.Log(msg)
+}
+
+func (pg *PG) LogErrorWithTrace(msg string, trace string) {
+  pg.globals.LogErrorWithTrace(msg, trace)
+}
+
+func (pg *PG) Clients() map[string]interface{} {
+  return pg.globals.Clients()
+}
+
+func (pg *PG) PostgresClient() *FakeClient {
+  return pg.globals.Clients()["postgres"].(*FakeClient)
+}
 
 func main() {
   config := ConfigInstance{}
-  globals := pseudoglobals.New(&config, LoggerImplementation{})
+  globals := &PG{pseudoglobals.New(&config, LoggerImplementation{}, map[string]interface{}{
+    "postgres": &FakeClient{},
+  })}
 
   defer func() {
     if r := recover(); r != nil {
       globals.LogErrorWithTrace(fmt.Sprintf("%s", r), "I could be a stack trace")
     }
   }()
+
+  globals.PostgresClient().DoSomething()
 
   globals.Log(globals.Config().GetString("some_config"))
 
