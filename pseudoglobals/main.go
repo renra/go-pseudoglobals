@@ -29,7 +29,7 @@ func (g Pseudoglobals) Logger() LoggerInstance {
   return g.logger
 }
 
-func New(c ConfigInstance, l LoggerImplementation) (* Pseudoglobals) {
+func New(config ConfigInstance, l LoggerImplementation) (* Pseudoglobals) {
   return &Pseudoglobals{
     config: config,
     logger: l.New(

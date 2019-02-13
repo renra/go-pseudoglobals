@@ -16,13 +16,6 @@ func (ci *ConfigInstance) GetString(key string) string {
   return key;
 }
 
-type ConfigImplementation struct {
-}
-
-func (ci ConfigImplementation) Load() pseudoglobals.ConfigInstance {
-  return &ConfigInstance{}
-}
-
 type LoggerInstance struct {
 }
 
@@ -39,7 +32,8 @@ func (li LoggerImplementation) New(label string, thresholdSeverity int, severiti
 
 
 func main() {
-  globals := pseudoglobals.New(ConfigImplementation{}, LoggerImplementation{}, "foo", "foo")
+  config := ConfigInstance{}
+  globals := pseudoglobals.New(&config, LoggerImplementation{})
 
   defer func() {
     if r := recover(); r != nil {
@@ -47,7 +41,7 @@ func main() {
     }
   }()
 
-  globals.Log(globals.Config.GetString("some_config"))
+  globals.Log(globals.Config().GetString("some_config"))
 
   panic("Can you do this?")
 }
