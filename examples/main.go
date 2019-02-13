@@ -8,21 +8,18 @@ import (
 type ConfigInstance struct {
 }
 
-func (cInst *ConfigInstance) GetString(key string) string {
+func (ci *ConfigInstance) Get(key string) interface{} {
   return key;
 }
 
-type ConfigImplementation struct {
-}
-
-func (ci ConfigImplementation) Load() pseudoglobals.ConfigInstance {
-  return &ConfigInstance{}
+func (ci *ConfigInstance) GetString(key string) string {
+  return key;
 }
 
 type LoggerInstance struct {
 }
 
-func (lInst LoggerInstance) LogWithSeverity(data map[string]string, severity int) {
+func (lInst *LoggerInstance) LogWithSeverity(data map[string]string, severity int) {
   fmt.Println(fmt.Sprintf("%d: %s", severity, data));
 }
 
@@ -33,9 +30,9 @@ func (li LoggerImplementation) New(label string, thresholdSeverity int, severiti
   return &LoggerInstance{}
 }
 
-
 func main() {
-  globals := pseudoglobals.New(ConfigImplementation{}, LoggerImplementation{})
+  config := ConfigInstance{}
+  globals := pseudoglobals.New(&config, LoggerImplementation{})
 
   defer func() {
     if r := recover(); r != nil {
@@ -43,7 +40,7 @@ func main() {
     }
   }()
 
-  globals.Log(globals.Config.GetString("some_config"))
+  globals.Log(globals.Config().GetString("some_config"))
 
   panic("Can you do this?")
 }
