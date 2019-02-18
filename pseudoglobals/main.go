@@ -19,6 +19,7 @@ type LoggerImplementation interface {
 type Pseudoglobals struct {
   config ConfigInstance
   logger LoggerInstance
+  clients map[string]interface{}
 }
 
 func (g *Pseudoglobals) Config() ConfigInstance {
@@ -29,7 +30,11 @@ func (g Pseudoglobals) Logger() LoggerInstance {
   return g.logger
 }
 
-func New(config ConfigInstance, l LoggerImplementation) (* Pseudoglobals) {
+func (g Pseudoglobals) Clients() map[string]interface{} {
+  return g.clients
+}
+
+func New(config ConfigInstance, l LoggerImplementation, clients map[string]interface{}) (* Pseudoglobals) {
   return &Pseudoglobals{
     config: config,
     logger: l.New(
@@ -40,6 +45,7 @@ func New(config ConfigInstance, l LoggerImplementation) (* Pseudoglobals) {
         SEVERITY_ERROR: "ERROR",
       },
     ),
+    clients: clients,
   }
 }
 
