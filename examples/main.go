@@ -32,7 +32,11 @@ func (li LoggerImplementation) New(label string, thresholdSeverity int, severiti
 
 func main() {
   config := ConfigInstance{}
-  globals := pseudoglobals.New(&config, LoggerImplementation{})
+  clients := map[string]interface{} {
+    "postgres": "fake postgres client",
+  }
+
+  globals := pseudoglobals.New(&config, LoggerImplementation{}, clients)
 
   defer func() {
     if r := recover(); r != nil {
