@@ -1,10 +1,3 @@
-# Pseudoglobals
-
-A project that takes care of pseudoglobals that can be passed to http request handlers. It was built together with [renra/go-logger](https://github.com/renra/go-logger) and [renra/go-helm-config](https://github.com/renra/go-helm-config) (TODO: add links) but it can be used with anything that implements the same interface. Right now it provides access to `Config`, `Logger` and `Clients`.
-
-## Usage
-
-```go
 package main
 
 import (
@@ -88,6 +81,3 @@ func main() {
 
   panic(errtrace.New("Can you do this?"))
 }
-```
-
-`Clients` is a generic type that you can use to store any kind of client in - postgres, redis, elasticsearch, http, etc. The pain is that you have to type-assert it when you read it back from config. So I would recommend to create a wrapper class that will provide that functionality automatically.
