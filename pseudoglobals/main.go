@@ -1,11 +1,23 @@
 package pseudoglobals
 
+import (
+  "github.com/renra/go-errtrace/errtrace"
+)
+
 const SEVERITY_INFO = 1
 const SEVERITY_ERROR = 0
 
 type ConfigInstance interface {
-  Get(string) interface{}
-  GetString(string) string
+  Get(string) (interface{}, *errtrace.Error)
+  GetP(string) interface{}
+  GetString(string) (string, *errtrace.Error)
+  GetStringP(string) string
+  GetInt(string) (int, *errtrace.Error)
+  GetIntP(string) int
+  GetFloat(string) (float64, *errtrace.Error)
+  GetFloatP(string) float64
+  GetBool(string) (bool, *errtrace.Error)
+  GetBoolP(string) bool
 }
 
 type LoggerInstance interface {
@@ -38,7 +50,7 @@ func New(config ConfigInstance, l LoggerImplementation, clients map[string]inter
   return &Pseudoglobals{
     config: config,
     logger: l.New(
-      config.GetString("service"),
+      config.GetStringP("service"),
       SEVERITY_INFO,
       map[int]string {
         SEVERITY_INFO: "INFO",
@@ -53,6 +65,6 @@ func (p * Pseudoglobals) Log(msg string) {
   p.Logger().LogWithSeverity(map[string]string{"message": msg}, SEVERITY_INFO)
 }
 
-func (p * Pseudoglobals) LogErrorWithTrace(msg string, trace string) {
-  p.Logger().LogWithSeverity(map[string]string{"msg": msg, "trace": trace}, SEVERITY_ERROR)
+func (p * Pseudoglobals) LogErrorWithTrace(err *errtrace.Error) {
+  p.Logger().LogWithSeverity(map[string]string{"msg": err.Error(), "trace": err.StringStack()}, SEVERITY_ERROR)
 }

@@ -2,7 +2,7 @@ SOURCES=./
 BINS=bin
 
 dep:
-	dep init
+	dep ensure
 
 .PHONY: clean
 clean:
