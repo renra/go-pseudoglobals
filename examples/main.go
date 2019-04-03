@@ -69,7 +69,7 @@ func main() {
     "postgres": "fake postgres client",
   }
 
-  globals := pseudoglobals.New(&config, LoggerImplementation{}, clients)
+  globals := pseudoglobals.New(&config, LoggerImplementation{}, "label", clients)
 
   defer func() {
     if r := recover(); r != nil {

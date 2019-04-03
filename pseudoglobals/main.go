@@ -46,11 +46,11 @@ func (g Pseudoglobals) Clients() map[string]interface{} {
   return g.clients
 }
 
-func New(config ConfigInstance, l LoggerImplementation, clients map[string]interface{}) (* Pseudoglobals) {
+func New(config ConfigInstance, l LoggerImplementation, logLabel string, clients map[string]interface{}) (* Pseudoglobals) {
   return &Pseudoglobals{
     config: config,
     logger: l.New(
-      config.GetStringP("service"),
+      logLabel,
       SEVERITY_INFO,
       map[int]string {
         SEVERITY_INFO: "INFO",
